@@ -21,6 +21,4 @@ jobs:
           curl -sSL https://ollama.ai/install | bash
           ollama pull llama3.2-vision
 
-      - name: Run Chatbot Script
-        run: |
-          python chatbot.py
+      
