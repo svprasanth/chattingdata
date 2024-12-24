@@ -1,10 +1,10 @@
 name: Run Llama3.2-Vision Chatbot
 
 on:
-  workflow_dispatch:
-  push:
+  push: # Runs automatically when changes are pushed to the main branch
     branches:
       - main
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   run-chatbot:
@@ -16,10 +16,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          # Install Ollama and dependencies
+          sudo apt-get update
+          sudo apt-get install -y curl python3 python3-pip
           curl -sSL https://ollama.ai/install | bash
           ollama pull llama3.2-vision
 
-      - name: Run Chatbot
+      - name: Run Chatbot Script
         run: |
           python chatbot.py
