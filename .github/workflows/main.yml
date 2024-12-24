@@ -1,10 +1,29 @@
-            - name: Run ollama server
-  # You may pin to the exact commit or the version.
-  # uses: pydantic/ollama-action@46b8bf0ffbd125a5f7465b37d9e4a6103729e388
-  uses: pydantic/ollama-action@v3
-  with:
-    # The model to run
-    model: 
-    # The cache key to use
-    cache-key: # optional, default is 
-          
+name: Run Ollama Server Automatically
+
+on:
+  push: # Trigger on pushes to the main branch
+    branches:
+      - main
+  schedule: # Trigger the workflow every day at 00:00 UTC
+    - cron: "0 0 * * *"
+
+jobs:
+  run-ollama-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl python3 python3-pip
+
+      - name: Run Ollama Server
+        uses: pydantic/ollama-action@v3
+        with:
+          # Specify the model to run
+          model: llama3.2-vision
+          # Optional cache key to manage versions
+          cache-key: llama3-vision-cache
