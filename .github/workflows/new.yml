@@ -1,0 +1,10 @@
+            - name: Run ollama server
+  # You may pin to the exact commit or the version.
+  # uses: pydantic/ollama-action@46b8bf0ffbd125a5f7465b37d9e4a6103729e388
+  uses: pydantic/ollama-action@v3
+  with:
+    # The model to run
+    model: 
+    # The cache key to use
+    cache-key: # optional, default is 
+          
