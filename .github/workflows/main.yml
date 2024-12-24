@@ -1,4 +1,4 @@
-name: Run Llama3.2-Vision Chatbot
+name: Run Ollama Llama3.2-Vision Chatbot
 
 on:
   push: # Runs automatically when changes are pushed to the main branch
@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Allows manual triggering
 
 jobs:
-  run-chatbot:
+  run-ollama:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,28 +16,46 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          # Update package list and install necessary dependencies
+          # Update and install dependencies
           sudo apt-get update
           sudo apt-get install -y curl python3 python3-pip
 
-          # Download and install Ollama (adjust URL if needed)
-          curl -sSL https://ollama.ai/install | bash || {
-            echo "Error: Failed to download Ollama installer."
-            exit 1
-          }
-
-          # Pull the llama3.2-vision model
-          ollama pull llama3.2-vision || {
-            echo "Error: Failed to pull llama3.2-vision model."
-            exit 1
-          }
-
-      - name: Run Llama3.2-Vision Model
+      - name: Install Ollama
         run: |
-          # Ensure Ollama is installed and working
-          ollama list || {
-            echo "Error: Ollama is not working as expected."
+          # Download and install Ollama CLI
+          curl -sSL https://ollama.ai/install | bash
+          # Verify installation
+          ollama --version || {
+            echo "Ollama installation failed!"
             exit 1
           }
-          # Generate output using the llama3.2-vision model
-          ollama generate llama3.2-vision -p "Describe the contents of this image: [image_url]"
+
+      - name: Pull Llama3.2-Vision Model
+        run: |
+          # Pull the specified model
+          ollama pull llama3.2-vision || {
+            echo "Failed to pull the llama3.2-vision model."
+            exit 1
+          }
+
+      - name: Test Llama3.2-Vision
+        run: |
+          # Run a test prompt with the model
+          echo "Describe the contents of this image: [image_url]" | ollama generate llama3.2-vision || {
+            echo "Model execution failed."
+            exit 1
+          }
+
+      - name: Upload Results (Optional)
+        run: |
+          # Create a results file for logging
+          echo "Model test completed successfully!" > results.txt
+          # Save results to the workflow artifacts
+          echo "Describe the contents of this image: [image_url]" | ollama generate llama3.2-vision >> results.txt
+          mkdir -p artifacts && mv results.txt artifacts/results.txt
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ollama-results
+          path: artifacts/results.txt
