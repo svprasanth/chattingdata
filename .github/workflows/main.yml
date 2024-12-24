@@ -1,0 +1,25 @@
+name: Run Llama3.2-Vision Chatbot
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-chatbot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          # Install Ollama and dependencies
+          curl -sSL https://ollama.ai/install | bash
+          ollama pull llama3.2-vision
+
+      - name: Run Chatbot
+        run: |
+          python chatbot.py
