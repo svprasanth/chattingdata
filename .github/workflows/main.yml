@@ -16,9 +16,28 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          # Update package list and install necessary dependencies
           sudo apt-get update
           sudo apt-get install -y curl python3 python3-pip
-          curl -sSL https://ollama.ai/install | bash
-          ollama pull llama3.2-vision
 
-      
+          # Download and install Ollama (adjust URL if needed)
+          curl -sSL https://ollama.ai/install | bash || {
+            echo "Error: Failed to download Ollama installer."
+            exit 1
+          }
+
+          # Pull the llama3.2-vision model
+          ollama pull llama3.2-vision || {
+            echo "Error: Failed to pull llama3.2-vision model."
+            exit 1
+          }
+
+      - name: Run Llama3.2-Vision Model
+        run: |
+          # Ensure Ollama is installed and working
+          ollama list || {
+            echo "Error: Ollama is not working as expected."
+            exit 1
+          }
+          # Generate output using the llama3.2-vision model
+          ollama generate llama3.2-vision -p "Describe the contents of this image: [image_url]"
