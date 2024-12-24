@@ -1,61 +1,10 @@
-name: Run Ollama Llama3.2-Vision Chatbot
-
-on:
-  push: # Runs automatically when changes are pushed to the main branch
-    branches:
-      - main
-  workflow_dispatch: # Allows manual triggering
-
-jobs:
-  run-ollama:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install Dependencies
-        run: |
-          # Update and install dependencies
-          sudo apt-get update
-          sudo apt-get install -y curl python3 python3-pip
-
-      - name: Install Ollama
-        run: |
-          # Download and install Ollama CLI
-          curl -sSL https://ollama.ai/install | bash
-          # Verify installation
-          ollama --version || {
-            echo "Ollama installation failed!"
-            exit 1
-          }
-
-      - name: Pull Llama3.2-Vision Model
-        run: |
-          # Pull the specified model
-          ollama pull llama3.2-vision || {
-            echo "Failed to pull the llama3.2-vision model."
-            exit 1
-          }
-
-      - name: Test Llama3.2-Vision
-        run: |
-          # Run a test prompt with the model
-          echo "Describe the contents of this image: [image_url]" | ollama generate llama3.2-vision || {
-            echo "Model execution failed."
-            exit 1
-          }
-
-      - name: Upload Results (Optional)
-        run: |
-          # Create a results file for logging
-          echo "Model test completed successfully!" > results.txt
-          # Save results to the workflow artifacts
-          echo "Describe the contents of this image: [image_url]" | ollama generate llama3.2-vision >> results.txt
-          mkdir -p artifacts && mv results.txt artifacts/results.txt
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ollama-results
-          path: artifacts/results.txt
+            - name: Run ollama server
+  # You may pin to the exact commit or the version.
+  # uses: pydantic/ollama-action@46b8bf0ffbd125a5f7465b37d9e4a6103729e388
+  uses: pydantic/ollama-action@v3
+  with:
+    # The model to run
+    model: 
+    # The cache key to use
+    cache-key: # optional, default is 
+          
